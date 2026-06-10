@@ -4,7 +4,7 @@ A high-efficiency Bash automation utility designed to process transactional sale
 
 ---
 
-## 🛠️ Script Architecture & Workflow
+##  Script Architecture & Workflow
 
 The utility consists of two core functional components designed to handle processing sequentially:
 
