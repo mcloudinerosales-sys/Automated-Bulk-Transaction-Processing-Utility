@@ -1,28 +1,100 @@
 #  Automated Bulk Transaction Processing Utility
 
-A high-efficiency Bash automation utility designed to process transactional sales validation advices in batches. By leveraging multi-layered script execution and `curl` networking, this script automates sequential HTTP requests to process multiple system IDs simultaneously, eliminating repetitive manual lookups and administrative inputs.
+An enterprise-grade Bash automation utility designed to process transactional sales validation advices in bulk. Instead of clicking and processing items manually inside the management portal, this utility takes a plain text list of target transaction IDs and automatically orchestrates sequential secure network requests via `curl`.
 
 ---
 
-##  Script Architecture & Workflow
+## 🛠️ Prerequisites & Environment Setup
 
-The utility consists of two core functional components designed to handle processing sequentially:
+Before running the script, ensure you have the correct tool open, depending on the computer operating system you are using:
 
-1. **`send_sale.sh` (Worker Script):** Handles individual network actions. It consumes a session token (`JSESSIONID`) and a target identifier (`ID`), crafts an HTTP POST payload with browser headers, and executes the request using `curl`, logging the complete raw output block for debugging.
-2. **`bulk_send_sale.sh` (Orchestrator Script):** Handles batch management. It loops through an input plain text file line-by-line, runs an in-place cleaning operation (`sed`) to strip carriage return artifacts, and calls the worker script sequentially for every active transaction ID found.
+* **Windows:** Do NOT use the default Command Prompt (cmd) or PowerShell. Instead, use **Git Bash** (Right-click inside your project folder and select **"Git Bash Here"**).
+* **Mac / Linux:** Open your default built-in **Terminal** app.
+
+### Project Directory Structure
+Make sure that your working directory contains all these configuration files layout so the orchestrator loop can execute properly:
+```text
+├── bulk_send_sale.sh     # The main batch manager loop script
+├── send_sale.sh          # The child core worker script that sends the network advice
+├── gcash_batch1.txt      # Production text file containing GCash transaction IDs
+├── batch1.txt            # Production text file containing standard transaction IDs
+└── test.txt              # Standard text file used for script logic testing
+
+```
 
 ---
 
 ##  Step-by-Step Execution Guide
 
-Follow these instructions to safely configure and execute the batch automation utility on your local system or testing environment.
+Follow these sequential commands inside your **Git Bash** or **Terminal** window to safely start processing records:
 
-### Step 1: Environment Requirements
-Ensure your operating system contains a Bash compatibility environment:
-* **Linux/macOS:** Ready out-of-the-box via terminal applications.
-* **Windows:** Use **Git Bash**, **WSL (Windows Subsystem for Linux)**, or an equivalent terminal environment.
+### Step 1: Assign Executable Rights to the Scripts
 
-### Step 2: Set Script Execution Permissions
-Before running the utility, you must explicitly grant execution rights to both shell scripts. Run the following command inside your terminal folder:
+By default, newly downloaded or transferred shell scripts require processing permissions. Run this command inside your workspace folder and press **Enter**:
+
 ```bash
 chmod +x send_sale.sh bulk_send_sale.sh
+
+```
+
+*(Note: No confirmation message means the permissions were assigned successfully).*
+
+### Step 2: Grab your Active Session Token (`JSESSIONID`)
+
+To authenticate the automated script without passing username credentials, extract your browser's active security token:
+
+1. Open your browser, navigate to the transaction web portal, and log in.
+2. Press **F12** on your keyboard (or Right-Click anywhere and select **Inspect**) to open the developer console tools.
+3. Head to the **Application** tab (Chrome/Edge) or **Storage** tab (Firefox).
+4. Expand the **Cookies** drop-down menu in the left sidebar and select the portal's URL.
+5. Find the entry row labeled **`JSESSIONID`** and copy its long alphanumeric token string (e.g., `m1db2jopgcye16auikn7ji1iu`).
+
+### Step 3: Run the Bulk Processor Execution Command
+
+Execute the orchestrator loop by passing your active session key as the first argument, and your chosen input txt file path as the second argument:
+
+```bash
+./bulk_send_sale.sh <YOUR_JSESSIONID_HERE> <CHOSEN_TXT_FILE>
+
+```
+
+* **Example 1: Running GCash Records**
+```bash
+./bulk_send_sale.sh m1db2jopgcye16auikn7ji1iu gcash_batch1.txt
+
+```
+
+
+* **Example 2: Running Standard Batch 1 Records**
+```bash
+./bulk_send_sale.sh m1db2jopgcye16auikn7ji1iu batch1.txt
+
+```
+
+
+* **Example 3: Testing the Pipeline Script Integration**
+```bash
+./bulk_send_sale.sh m1db2jopgcye16auikn7ji1iu test.txt
+
+```
+
+
+
+### Step 4: Monitor Logs and Confirm Processing
+
+1. Your terminal screen will immediately print automated timestamps confirming the ID entry currently being pushed to the platform server.
+2. The runtime loop automatically uses `sed` internally to sanitize text formatting issues (like carriage returns `\r`) from your windows environment lists.
+3. A distinct operational record file named `send_sale_<ID>.log` will generate in your folder for every document handled, letting you review technical response outputs at any time.
+
+---
+
+##  Script Architecture Overview
+
+* **`send_sale.sh`:** Houses individual network connection parameters. It takes a transactional ID, defines specialized browser mock headers (User-Agent, Origin, Referer), and injects raw form data (`_action_sendSaleAdvicePAID=Send+Sale+Advice`) straight into the API cluster endpoint.
+* **`bulk_send_sale.sh`:** Manages validation workflows. It includes failure safeguards that stop execution if variables are empty, reads text batches line-by-line using an active input redirector loop, and automatically relays the dataset tokens over to the child transaction runner.
+
+```
+
+Ngayon, kasama na sila lahat sa documentation mo bilang active data files mo. Mas mukhang detalyado at kompleto na ang system mo!
+
+```
