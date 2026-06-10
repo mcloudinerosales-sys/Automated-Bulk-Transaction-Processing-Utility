@@ -4,7 +4,7 @@ An enterprise-grade Bash automation utility designed to process transactional sa
 
 ---
 
-## 🛠️ Prerequisites & Environment Setup
+##  Prerequisites & Environment Setup
 
 Before running the script, ensure you have the correct tool open, depending on the computer operating system you are using:
 
@@ -95,6 +95,3 @@ Execute the orchestrator loop by passing your active session key as the first ar
 
 ```
 
-Ngayon, kasama na sila lahat sa documentation mo bilang active data files mo. Mas mukhang detalyado at kompleto na ang system mo!
-
-```
